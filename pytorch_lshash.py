@@ -19,11 +19,11 @@ class PyTorchLSHash(object):
 
     def query(self, s, input_points, number_of_results=100):
         mask_size = len(input_points), 1
-        mask = torch.zeros(mask_size).byte().cuda()
+        mask = (div(
+                    self.hash_tables,
+                    torch.FloatTensor(np.unique(self.hash_tables[s].cpu().numpy())).unsqueeze(0).cuda(),
+               ) == 1).sum(1)
 
-        for each in np.unique(self.hash_tables[s].cpu().numpy()):
-            new_mask = self.hash_tables.eq(int(each))
-            mask += new_mask
         # randomly select number_of_results from existing mask
         m = torch.ones(mask_size) / mask.sum() * number_of_results
         mask = m.squeeze().cuda() * mask.float().cuda()
