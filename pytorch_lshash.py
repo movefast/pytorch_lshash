@@ -15,7 +15,7 @@ class PyTorchLSHash(object):
         self.hash_tables = dot(
             hashes.float(),
             torch.FloatTensor([2 ** exp for exp in range(self.hash_size, 0, -1)]).unsqueeze(1).cuda(),
-        )
+        ) + 1
 
     def query(self, s, input_points, number_of_results=100):
         mask_size = len(input_points), 1
